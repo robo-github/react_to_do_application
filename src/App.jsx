@@ -2,34 +2,41 @@ import { useState, useEffect } from "react";
 import TodoInput from "./components/TodoInput";
 import TodoList from "./components/TodoList";
 import "./App.css";
+import axios from "axios";
+
+const API_URL = "http://localhost:5000/api/todos";
 
 function App() {
   const [input, setInput] = useState("");
   const [todos, setTodos] = useState([]);
 
-  const addTodo = () => {
+  // Fetch todos
+  useEffect(() => {
+    axios.get(API_URL).then((res) => setTodos(res.data));
+  }, []);
+
+  //Add new todo
+  const addTodo = async () => {
     if (input.trim() === "") return;
-    setTodos([...todos, { id: Date.now(), text: input, completed: false }]);
+    const res = await axios.post(API_URL, { text: input });
+    setTodos([...todos, res.data]);
     setInput("");
   };
-  const toggleTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
-  };
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+
+  //Toggle Todo
+  const toggleTodo = async (id) => {
+    const todo = todos.find((t) => t._id === id);
+    const res = await axios.patch(`${API_URL}/${id}`, {
+      completed: !todo.completed,
+    });
+    setTodos(todos.map((t) => (t._id === id ? res.data : t)));
   };
 
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("todos"));
-    if (saved) setTodos(saved);
-  }, []);
-  useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-  }, [todos]);
+  // Delete todo
+  const deleteTodo = async (id) => {
+    await axios.delete(`${API_URL}/${id}`);
+    setTodos(todos.filter((t) => t._id !== id));
+  };
 
   return (
     <>

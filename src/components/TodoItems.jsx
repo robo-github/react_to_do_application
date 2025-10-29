@@ -6,7 +6,7 @@ function TodoItems({ todo, toggleTodo, deleteTodo }) {
       <input
         type="checkbox"
         checked={todo.completed}
-        onChange={() => toggleTodo(todo.id)}
+        onChange={() => toggleTodo(todo._id)}
       />
       <p
         className="todo-text"
@@ -22,7 +22,7 @@ function TodoItems({ todo, toggleTodo, deleteTodo }) {
       >
         {todo.text}
       </p>
-      <button className="delete-btn" onClick={() => deleteTodo(todo.id)}>
+      <button className="delete-btn" onClick={() => deleteTodo(todo._id)}>
         🗑️
       </button>
     </div>
