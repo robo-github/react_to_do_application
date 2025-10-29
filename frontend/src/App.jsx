@@ -4,7 +4,8 @@ import TodoList from "./components/TodoList";
 import "./App.css";
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/todos";
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api/todos";
 
 function App() {
   const [input, setInput] = useState("");
